@@ -4,22 +4,22 @@ import {
   mathOperators,
   mathPriorities,
   mathOperatorsPriorities,
+  singleOperators,
 } from "./mathOperators";
 
 const { FIRST, SECOND } = mathPriorities;
 
-export const firstPrioritiesCalc = (stack: ParsedLineType): ParsedLineType => {
+export const singleOperatorsCalc = (stack: ParsedLineType): ParsedLineType => {
   let result: ParsedLineType = [];
 
   for (let key = 0; key < stack.length; key++) {
-    const prevItem = result[result.length - 2];
     const item = result[result.length - 1];
     const nextItem = stack[key];
 
-    if (!isNumber(String(item)) && mathOperatorsPriorities[item] === FIRST) {
+    if (singleOperators[nextItem] !== undefined) {
       result = [
-        ...result.slice(0, -2),
-        mathOperators[item](Number(prevItem), Number(nextItem)),
+        ...result.slice(0, -1),
+        singleOperators[nextItem](Number(item)),
       ];
     } else {
       result.push(nextItem);
@@ -29,20 +29,34 @@ export const firstPrioritiesCalc = (stack: ParsedLineType): ParsedLineType => {
   return result;
 };
 
-export const secondPrioritiesCalc = (stack: ParsedLineType): number => {
-  let result = 0;
-  for (let key = 0; key < stack.length; key++) {
-    if (key === 0) {
-      result = Number(stack[key]);
-    }
+export const firstPrioritiesCalc = (stack: ParsedLineType): ParsedLineType => {
+  return prioritiesCalc(stack, FIRST);
+};
 
-    const prevItem = result;
-    const item = stack[key - 1];
+export const secondPrioritiesCalc = (stack: ParsedLineType): ParsedLineType => {
+  return prioritiesCalc(stack, SECOND);
+};
+
+const prioritiesCalc = (
+  stack: ParsedLineType,
+  priority: number
+): ParsedLineType => {
+  let result: ParsedLineType = [];
+
+  for (let key = 0; key < stack.length; key++) {
+    const prevItem = result[result.length - 2];
+    const item = result[result.length - 1];
     const nextItem = stack[key];
 
-    if (!isNumber(String(item)) && mathOperatorsPriorities[item] === SECOND) {
-      result = mathOperators[item](Number(prevItem), Number(nextItem));
+    if (!isNumber(String(item)) && mathOperatorsPriorities[item] === priority) {
+      result = [
+        ...result.slice(0, -2),
+        mathOperators[item](Number(prevItem), Number(nextItem)),
+      ];
+    } else {
+      result.push(nextItem);
     }
   }
+
   return result;
 };

@@ -1,6 +1,10 @@
-import { parser } from "./parser";
+import { ParsedLineType, parser } from "./parser";
 
-import { firstPrioritiesCalc, secondPrioritiesCalc } from "./engine";
+import {
+  singleOperatorsCalc,
+  firstPrioritiesCalc,
+  secondPrioritiesCalc,
+} from "./engine";
 
 export const runner = (line: string): number => {
   const stack = parser(line);
@@ -9,11 +13,16 @@ export const runner = (line: string): number => {
     throw new TypeError("Unexpected string");
   }
 
-  const firstPrioritiesRes = firstPrioritiesCalc(stack);
-
-  if (firstPrioritiesRes.length === 1) {
-    return Number(firstPrioritiesRes[0]);
+  const operators: { (data: ParsedLineType): ParsedLineType }[] = [
+    singleOperatorsCalc,
+    firstPrioritiesCalc,
+    secondPrioritiesCalc,
+  ];
+  let processedStack = stack;
+  for (let i = 0; i < operators.length; i++) {
+    processedStack = operators[i](processedStack);
+    if (processedStack.length === 1) {
+      return Number(processedStack[0]);
+    }
   }
-
-  return secondPrioritiesCalc(firstPrioritiesRes);
 };

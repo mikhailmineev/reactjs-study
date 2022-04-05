@@ -8,6 +8,30 @@ test("runner: 2 * 32", () => {
   expect(runner("2 * 32")).toEqual(64);
 });
 
+test("runner: 3 !", () => {
+  expect(runner("3 !")).toEqual(6);
+});
+
+test("runner: 3 **", () => {
+  expect(runner("3 **")).toEqual(9);
+});
+
+test("runner: 2 ^ 3", () => {
+  expect(runner("2 ^ 3")).toEqual(8);
+});
+
+test("runner: 2 + 3 ! + 2", () => {
+  expect(runner("2 + 3 ! + 2")).toEqual(10);
+});
+
+test("runner: 2 + 3 ** + 2", () => {
+  expect(runner("2 + 3 ** + 2")).toEqual(13);
+});
+
+test("runner: 2 + 2 ^ 3 + 2", () => {
+  expect(runner("2 + 2 ^ 3 + 2")).toEqual(12);
+});
+
 test("runner: 2 * 2 * 3", () => {
   expect(runner("2 * 2 * 3")).toEqual(12);
 });
