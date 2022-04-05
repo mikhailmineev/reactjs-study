@@ -25,4 +25,5 @@ export const runner = (line: string): number => {
       return Number(processedStack[0]);
     }
   }
+  return 0;
 };
